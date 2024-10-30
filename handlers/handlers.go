@@ -8,7 +8,6 @@ import (
 	"final/nextdate"
 	"final/storage"
 	"final/task"
-
 )
 
 const ParseDate = "20060102"
@@ -26,6 +25,7 @@ func (h *Handlers) AddTask() http.HandlerFunc {
 			response := map[string]interface{}{
 				"error": err,
 			}
+			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(response)
 			return
 		}
@@ -157,7 +157,7 @@ func (h *Handlers) TaskDone() http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		id := r.FormValue("id")
 		if id == "" {
-			http.Error(w, `{"error": "Не указан индентификатор"}`, http.StatusInternalServerError)
+			http.Error(w, `{"error": "Не указан индентификатор"}`, http.StatusBadRequest)
 			return
 		}
 		task, err := h.TaskStorage.Findtask(id)
